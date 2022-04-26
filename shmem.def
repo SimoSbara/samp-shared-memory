@@ -1,0 +1,9 @@
+LIBRARY	"shmem"
+
+EXPORTS
+	Supports
+	Load
+	Unload
+	AmxLoad
+	AmxUnload
+	ProcessTick
