@@ -30,7 +30,7 @@ endif
 ifeq ($(config),debug)
   OBJDIR     = obj/linux/Debug
   TARGETDIR  = bin/linux/Debug
-  TARGET     = $(TARGETDIR)/shmem.so
+  TARGET     = $(TARGETDIR)/sharedmemory.so
   DEFINES   += 
   INCLUDES  += -Iinclude
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
@@ -52,7 +52,7 @@ endif
 ifeq ($(config),release)
   OBJDIR     = obj/linux/Release
   TARGETDIR  = bin/linux/Release
-  TARGET     = $(TARGETDIR)/dns.so
+  TARGET     = $(TARGETDIR)/sharedmemory.so
   DEFINES   += -DNDEBUG
   INCLUDES  += -Iinclude
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
@@ -72,10 +72,6 @@ ifeq ($(config),release)
 endif
 
 OBJECTS := \
-	$(OBJDIR)/error_code.o \
-	$(OBJDIR)/once.o \
-	$(OBJDIR)/future.o \
-	$(OBJDIR)/tss_null.o \
 	$(OBJDIR)/plugin.o \
 	$(OBJDIR)/main.o \
 
@@ -95,7 +91,7 @@ all: $(TARGETDIR) $(OBJDIR) prebuild prelink $(TARGET)
 	@:
 
 $(TARGET): $(GCH) $(OBJECTS) $(LDDEPS) $(RESOURCES)
-	@echo Linking dns
+	@echo Linking shmem
 	$(SILENT) $(LINKCMD)
 	$(POSTBUILDCMDS)
 
@@ -116,7 +112,7 @@ else
 endif
 
 clean:
-	@echo Cleaning dns
+	@echo Cleaning shmem
 ifeq (posix,$(SHELLTYPE))
 	$(SILENT) rm -f  $(TARGET)
 	$(SILENT) rm -rf $(OBJDIR)

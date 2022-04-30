@@ -4,10 +4,10 @@
 #define PLUGIN_VERSION "1.0"
 
 #include <sdk/plugin.h>
-#include <windows.h>
+#ifdef _WIN32
+	#include <windows.h>
+#endif
 #include <string>
-#include <vector>
-#include <atomic>
 
 #define CHECK_PARAMS(m, n) \
 	if (params[0] != (m * 4)) \

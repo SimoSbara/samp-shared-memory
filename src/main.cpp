@@ -2,17 +2,16 @@
 
 #include <sdk/plugin.h>
 
-#include <queue>
 #include <set>
 #include <string>
-#include <vector>
 #include <map>
 
 #ifdef _WIN32
 	#include <windows.h>
 #else
-	#include <arpa/inet.h>
-	#include <netdb.h>
+	#include <sys/types.h>
+	#include <sys/ipc.h>
+	#include <sys/shm.h>
 #endif
 
 std::set<AMX*> interfaces;
@@ -52,7 +51,7 @@ static cell AMX_NATIVE_CALL n_OpenShMemory(AMX* amx, cell* params)
 	if (memName != NULL)
 	{
 #ifdef LINUX
-		int id = shmget(key, memSize + 1, IPC_CREAT | 0666);// +1 because of the flag of sync semaphore  
+		int id = shmget(key, memSize + sizeof(cell), IPC_CREAT | 0666);// +sizeof cell because of the flag of sync semaphore  
 
 		if (id < 0)
 		{
