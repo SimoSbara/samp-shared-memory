@@ -20,7 +20,7 @@ A GTA SAMP plugin for IPC shared memory funcionality.
 
 ### Example of use
 
-* An example is provided in example folder as a samp gamemode + an external program writing/reading a shared memory segment.
+* Examples in Python, C/C++ and Pawno gamemode (for now) are provided in "/Example" folder.
 
 ### Documentation
 * Documentation can be found in the wiki section.
