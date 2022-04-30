@@ -5,6 +5,27 @@
 
 A GTA SAMP plugin for IPC shared memory functionality.
 
+## Concept
+
+### Explanation
+This plugin is created for better performance in the creation of a SAMP gamemode.
+
+With this plugin you can distribuite works across other process in the operating system by using shared memory segments.
+
+This approach could save time to the gamemode developer and provide better performance in some tasks.
+
+Example:
+* Instead of getting data from the samp gamemode, you could do a C# program that does that in a simplier way with the shared memory segment writing.
+* You could do any intense calculation (even a neural network) in a separate program (with GPUs) and comunicate with the samp gememode by reading/writing onto a shared memory segment.
+* Much more...
+
+### Scheme
+![alt text](https://simosbara.s-ul.eu/Z9tPgEKU)
+
+### Performance
+
+Work in progress...
+
 ## Getting Started
 
 ### Compiling
