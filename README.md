@@ -3,7 +3,7 @@
 
 ## Description
 
-A GTA SAMP plugin for IPC shared memory funcionality.
+A GTA SAMP plugin for IPC shared memory functionality.
 
 ## Getting Started
 
