@@ -44,7 +44,7 @@ Work in progress...
 * Examples in Python, C/C++ and Pawno gamemode (for now) are provided in "/Example" folder.
 
 ### Documentation
-* Documentation can be found in the wiki section.
+* Documentation can be found in the [wiki](https://github.com/SimoSbara/samp-shared-memory/wiki) section.
 
 ## Authors
 
