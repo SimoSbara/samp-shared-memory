@@ -22,7 +22,7 @@ Example:
 ### Scheme
 ![alt text](https://simosbara.s-ul.eu/Z9tPgEKU)
 
-### Performance
+### Performance Charts
 
 Work in progress...
 
@@ -32,7 +32,7 @@ Work in progress...
 
 * If you want to compile the project on Windows, you will need Visual Studio 2019 or 2022.
 * If you want to compile the project on Linux, you will need to execute "make" in the global folder.
-* Otherwise, there are also pre-compiled binaries.
+* Otherwise, there are also pre-compiled binaries in [Releases](https://github.com/SimoSbara/samp-shared-memory/releases).
 
 ### Installing
 
@@ -41,7 +41,7 @@ Work in progress...
 
 ### Example of use
 
-* Examples in Python, C/C++ and Pawno gamemode (for now) are provided in "/Example" folder.
+* [Examples](https://github.com/SimoSbara/samp-shared-memory/tree/main/Examples) in Python, C/C++ and Pawno gamemode (for now).
 
 ### Documentation
 * Documentation can be found in the [wiki](https://github.com/SimoSbara/samp-shared-memory/wiki) section.
