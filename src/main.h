@@ -18,10 +18,10 @@
 
 struct SharedMem
 {
-#ifdef LINUX
-	int memID;
-#elif defined(WIN32)
+#ifdef _WIN32
 	HANDLE memHandle;
+#else
+	int memID;
 #endif
 	int memSize;
 };

@@ -12,6 +12,7 @@
 	#include <sys/types.h>
 	#include <sys/ipc.h>
 	#include <sys/shm.h>
+	#include <cstring>
 #endif
 
 std::set<AMX*> interfaces;
@@ -50,21 +51,7 @@ static cell AMX_NATIVE_CALL n_OpenShMemory(AMX* amx, cell* params)
 
 	if (memName != NULL)
 	{
-#ifdef LINUX
-		key_t shmemKey;
-
-		shmemKey = (int)memName;
-
-		int id = shmget(shmemKey, memSize + sizeof(cell), IPC_CREAT | 0666);// + sizeof(cell) because of sync flag
-
-		if (id < 0)
-		{
-			logprintf("*** Error creating shared memory \"%s\"", memName);
-			return 1;
-		}
-
-		openMemSegments.insert(memName, { id, newMem });
-#elif defined(WIN32)
+#if defined(WIN32)
 		HANDLE mappedMemory = CreateFileMapping(
 			INVALID_HANDLE_VALUE,    // use paging file
 			NULL,                    // default security
@@ -101,6 +88,20 @@ static cell AMX_NATIVE_CALL n_OpenShMemory(AMX* amx, cell* params)
 		UnmapViewOfFile(pBuf);
 
 		openMemSegments[memName] = { mappedMemory, memSize };
+#else
+		key_t shmemKey;
+
+		shmemKey = *(int*)memName;
+
+		int id = shmget(shmemKey, memSize + sizeof(cell), IPC_CREAT | 0666);// + sizeof(cell) because of sync flag
+
+		if (id < 0)
+		{
+			logprintf("*** Error creating shared memory \"%s\"", memName);
+			return 1;
+		}
+
+		openMemSegments[memName] = { id, memSize };
 #endif
 		return 0;
 	}
@@ -121,10 +122,10 @@ static cell AMX_NATIVE_CALL n_DestroyShMemory(AMX* amx, cell* params)
 		if (mem != NULL)
 		{
 
-#ifdef LINUX
-			shmctl(mem->id, IPC_RMID, NULL);
-#elif defined(WIN32)
+#ifdef _WIN32
 			CloseHandle(mem->memHandle);
+#else
+			shmctl(mem->memID, IPC_RMID, NULL);
 #endif
 			openMemSegments.erase(memName);
 			
@@ -158,22 +159,22 @@ static cell AMX_NATIVE_CALL n_SetShMemoryData(AMX* amx, cell* params)
 				0,
 				0,
 				mem->memSize + sizeof(cell));
-#elif defined(LINUX)
-			void* pBuf = (char*)shmat(mem->id, NULL, 0);
+#else
+			void* pBuf = (void*)shmat(mem->memID, NULL, 0);
 #endif
 
 #ifdef _WIN32
 			if (pBuf == NULL)
-#elif defined(LINUX)
+#else
 			if (pBuf == (void*)-1)
 #endif
 			{
 #ifdef _WIN32
 				logprintf("*** Error viewing shared memory \"%s\" CLOSING..., code: %d ", memName, GetLastError());
 				CloseHandle(pBuf);
-#elif defined(LINUX)
+#else
 				logprintf("*** Error viewing shared memory \"%s\" CLOSING...", memName);
-				shmctl(mem->id, IPC_RMID, NULL);
+				shmctl(mem->memID, IPC_RMID, NULL);
 #endif
 				openMemSegments.erase(memName);
 
@@ -186,7 +187,7 @@ static cell AMX_NATIVE_CALL n_SetShMemoryData(AMX* amx, cell* params)
 			{
 #ifdef _WIN32
 				UnmapViewOfFile(pBuf);
-#elif defined(LINUX)
+#else
 				shmdt(pBuf);
 #endif
 				//flag is true, it means that another process is accessing it
@@ -206,7 +207,7 @@ static cell AMX_NATIVE_CALL n_SetShMemoryData(AMX* amx, cell* params)
 
 #ifdef _WIN32
 			UnmapViewOfFile(pBuf);
-#elif defined (LINUX)
+#else
 			shmdt(pBuf);
 #endif
 			return 0;
@@ -225,9 +226,6 @@ static cell AMX_NATIVE_CALL n_GetShMemoryData(AMX* amx, cell* params)
 
 	if (memName != NULL)
 	{
-#ifdef LINUX
-
-#elif defined(WIN32)
 		SharedMem* mem = &openMemSegments[memName];
 
 		if (mem != NULL)
@@ -238,22 +236,22 @@ static cell AMX_NATIVE_CALL n_GetShMemoryData(AMX* amx, cell* params)
 				0,
 				0,
 				mem->memSize + sizeof(cell));
-#elif defined(LINUX)
-			void* pBuf = (char*)shmat(mem->id, NULL, 0);
+#else
+			void* pBuf = (void*)shmat(mem->memID, NULL, 0);
 #endif
 
 #ifdef _WIN32
 			if (pBuf == NULL)
-#elif defined(LINUX)
+#else
 			if (pBuf == (void*)-1)
 #endif
 			{
 #ifdef _WIN32
 				logprintf("*** Error viewing shared memory \"%s\" CLOSING..., code: %d ", memName, GetLastError());
 				CloseHandle(pBuf);
-#elif defined(LINUX)
+#else
 				logprintf("*** Error viewing shared memory \"%s\" CLOSING...", memName);
-				shmctl(mem->id, IPC_RMID, NULL);
+				shmctl(mem->memID, IPC_RMID, NULL);
 #endif
 				openMemSegments.erase(memName);
 
@@ -266,7 +264,7 @@ static cell AMX_NATIVE_CALL n_GetShMemoryData(AMX* amx, cell* params)
 			{
 #ifdef _WIN32
 				UnmapViewOfFile(pBuf);
-#elif defined(LINUX)
+#else
 				shmdt(pBuf);
 #endif
 				//flag is true, it means that another process is accessing it
@@ -286,11 +284,10 @@ static cell AMX_NATIVE_CALL n_GetShMemoryData(AMX* amx, cell* params)
 
 #ifdef _WIN32
 			UnmapViewOfFile(pBuf);
-#elif defined (LINUX)
+#else
 			shmdt(pBuf);
 #endif
 		}
-#endif
 	}
 
 	return 1;
