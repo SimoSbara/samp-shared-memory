@@ -22,10 +22,6 @@ Example:
 ### Scheme
 ![alt text](https://simosbara.s-ul.eu/Z9tPgEKU)
 
-### Performance Charts
-
-Work in progress...
-
 ## Getting Started
 
 ### Compiling
