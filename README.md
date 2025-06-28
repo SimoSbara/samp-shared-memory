@@ -15,7 +15,7 @@ With this plugin you can distribuite works across other process in the operating
 This approach could save time to the gamemode developer and provide better performance in some tasks.
 
 Example:
-* Instead of getting data from the samp gamemode, you could do a C# program that does that in a simplier way with the shared memory segment writing.
+* Instead of getting data from a Database from the samp gamemode, you could do a C# program that does that in a simplier/faster way and exchange data with the shared memory segment.
 * You could do any intense calculation (even a neural network) in a separate program (with GPUs) and comunicate with the samp gememode by reading/writing onto a shared memory segment.
 * Much more...
 
